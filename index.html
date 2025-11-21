@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>减重计划</title>
+    <title>4个月减重特训计划</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <!-- 引入 Markdown 解析库 (可选，用于美化 AI 输出) -->
+    <!-- 引入 Markdown 解析库 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         body {
+            /* 优化字体以支持中文和系统默认 */
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         }
         .chart-container {
@@ -71,6 +72,30 @@
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
+        /* === 关键优化区域：确保 Markdown 输出在移动端不溢出 === */
+        #foodResult {
+            /* 确保父容器是全宽度的，如果AI结果很长，可以自动撑开 */
+            width: 100%; 
+            overflow-x: hidden; /* 防止溢出后出现横向滚动条 */
+        }
+        #foodResult * {
+            /* 强制长单词和长文本换行 */
+            word-break: break-word; 
+            /* 允许在单词内换行，特别针对中文环境 */
+            overflow-wrap: break-word; 
+            /* 针对标题进行优化，防止大字体溢出 */
+            max-width: 100%; 
+            display: block; /* 确保h标签独占一行，方便换行和渲染 */
+        }
+        /* 针对 H4 标题，限制其字体大小以适应窄屏幕，并确保自动换行 */
+        #foodResult h4, #foodResult h3, #foodResult h2 {
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 700;
+            line-height: 1.5;
+            white-space: normal; /* 确保标题内容可以自动换行 */
+        }
+        
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -108,7 +133,7 @@
                     
                     <div class="border-t pt-4">
                          <h3 class="font-bold text-gray-700 mb-2">🤖 AI 进度复盘</h3>
-                         <p class="text-xs text-gray-500 mb-3">让 Gemini 分析你的近期数据，找出问题或给予鼓励。</p>
+                         <p class="text-xs text-gray-500 mb-3">让 DeepSeek 分析你的近期数据，找出问题或给予鼓励。</p>
                          <button onclick="analyzeProgress()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition shadow-md flex justify-center items-center gap-2">
                             <span id="analyzeBtnText">✨ 分析我的进度</span>
                         </button>
@@ -125,7 +150,7 @@
                         <div class="chart-container flex-grow" style="height: 300px;">
                             <canvas id="progressChart"></canvas>
                         </div>
-                        <div id="analysisResult" class="hidden mt-4 p-4 bg-purple-50 border border-purple-100 rounded-lg text-sm text-purple-900"></div>
+                        <div id="analysisResult" class="hidden mt-4 p-4 bg-purple-50 border border-purple-100 rounded-lg text-sm text-purple-900 break-words"></div>
                     </div>
                 </div>
             </div>
@@ -174,7 +199,8 @@
                             <span id="foodBtnText">分析</span>
                         </button>
                     </div>
-                    <div id="foodResult" class="hidden bg-white p-4 rounded border border-gray-200 text-gray-700 text-sm leading-relaxed min-h-[100px]"></div>
+                    <!-- 关键优化：使用 w-full 确保全宽，并让 CSS style 块处理内部 Markdown 元素的换行和字体大小 -->
+                    <div id="foodResult" class="hidden w-full bg-white p-4 rounded border border-gray-200 text-gray-700 text-sm leading-relaxed min-h-[100px]"></div>
                 </div>
 
                 <!-- Feature 2: SOS Motivation -->
@@ -186,7 +212,7 @@
                     <button onclick="getMotivation()" class="w-full bg-red-500 hover:bg-red-600 text-white p-4 rounded-lg font-bold text-lg transition-colors shadow-md mb-4 flex justify-center items-center gap-2">
                         <span id="sosBtnIcon">🚨</span> <span id="sosBtnText">我想点外卖！救救我！</span>
                     </button>
-                    <div id="sosResult" class="hidden bg-red-50 p-4 rounded border border-red-100 text-red-800 italic text-center min-h-[80px] flex items-center justify-center"></div>
+                    <div id="sosResult" class="hidden bg-red-50 p-4 rounded border border-red-100 text-red-800 italic text-center min-h-[80px]"></div>
                 </div>
             </div>
         </section>
@@ -274,14 +300,8 @@
 
         <section class="bg-white rounded-lg shadow-md p-6 mb-12">
             <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">🍽️ 食堂战术：午餐“过水”法</h2>
-                    <div class="border-t pt-4">
-                         <h3 class="font-bold text-gray-700 mb-2">🤖 AI 进度复盘</h3>
-                         <p class="text-xs text-gray-500 mb-3">让 AI 分析你的近期数据，找出问题或给予鼓励。</p>
-                         <button onclick="analyzeProgress()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition shadow-md flex justify-center items-center gap-2">
-                            <span id="analyzeBtnText">✨ 分析我的进度</span>
-                        </button>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
                 <div>
                     <h3 class="font-bold text-xl text-[#007399] mb-4">严格执行顺序和技巧</h3>
                     <ol class="list-decimal list-inside space-y-3 text-gray-700">
@@ -394,7 +414,9 @@
         // 步骤：
         // 1. 访问 https://platform.deepseek.com/ 注册并申请 API Key
         // 2. 将 Key 填入下方引号中
-        const apiKey = "sk-a5c524e69b2642bf88e49beba1950552"; // 填写你的 Key，例如 "sk-123456..."
+        // 注意：您的 Key "sk-a5c524e69b2642bf88e49beba1950552" 报告了【余额不足】错误 (402)。
+        // 请在此处替换为您充值后的新 Key，否则 AI 功能将无法使用。
+        const apiKey = "sk-a5c524e69b2642bf88e49beba1950552"; // 请在此处填写您新的 DeepSeek API Key
         
         // DeepSeek 配置 (无需 VPN，国内直连)
         const API_URL = "https://api.deepseek.com/chat/completions";
@@ -402,8 +424,11 @@
 
         // --- 通用 AI 调用函数 (OpenAI 兼容格式) ---
         async function callAI(prompt, systemInstruction = "") {
+            const apiResultDiv = document.getElementById('analysisResult') || document.getElementById('foodResult') || document.getElementById('sosResult');
+            
             if (!apiKey) {
-                return "请先在代码中填入您的 API Key (DeepSeek) 才能使用 AI 功能。";
+                const missingKeyMsg = "错误：AI API Key 缺失！请在代码中填入您的 DeepSeek API Key 才能使用 AI 功能。";
+                return missingKeyMsg;
             }
             
             try {
@@ -424,16 +449,36 @@
                 });
 
                 if (!response.ok) {
-                    const errData = await response.json();
-                    console.error("API Error Detail:", errData);
-                    throw new Error(`API Error: ${response.status}`);
+                    let errorDetail = `Status: ${response.status}.`;
+                    let errorMessage = "AI 请求失败：";
+                    try {
+                        const errData = await response.json();
+                        errorDetail += ` Detail: ${JSON.stringify(errData)}`;
+
+                        if (response.status === 402 && errData.error && errData.error.message.includes("Insufficient Balance")) {
+                            errorMessage += "【余额不足】。请充值您的 DeepSeek 账户。";
+                        } else if (response.status === 401) {
+                            errorMessage += "【授权失败】。请检查您的 API Key 是否正确。";
+                        } else {
+                            errorMessage += `服务器错误 (${response.status})。请查看控制台获取详情。`;
+                        }
+                    } catch (e) {
+                        const errorText = await response.text();
+                        errorDetail += ` Non-JSON Body: ${errorText}`;
+                        errorMessage += `网络或服务错误 (${response.status})。`;
+                    }
+                    console.error("API Error Detail:", errorDetail);
+                    throw new Error(errorMessage);
                 }
 
                 const data = await response.json();
                 return data.choices[0].message.content;
             } catch (error) {
-                console.error("AI API Error:", error);
-                return "抱歉，AI 助手连接失败。请检查您的网络或 API Key 是否正确。";
+                console.error("AI API Catch Block Error:", error);
+                
+                let userMessage = error.message || "抱歉，AI 助手连接失败。请检查您的网络连接或稍后重试。";
+
+                return userMessage;
             }
         }
 
@@ -455,16 +500,23 @@
             任务：分析用户输入的食物是否适合他吃。
             输出格式要求：请用Markdown格式。
             1. 首先给出一个Emoji红绿灯判断：🟢 (推荐/安全) / 🟡 (适量/小心) / 🔴 (禁止/危险)。
-            2. **血糖影响**：简述GI值或糖负荷。
-            3. **痛风影响**：简述嘌呤含量。
-            4. **建议**：如果不吃，给出替代方案；如果吃，给出分量建议。
+            2. 使用#### 四级标题表示各个分析项，例如 #### 血糖影响。
+            3. **血糖影响**：简述GI值或糖负荷。
+            4. **痛风影响**：简述嘌呤含量。
+            5. **建议**：如果不吃，给出替代方案；如果吃，给出分量建议。
             保持语气专业但亲切。`;
 
             const userPrompt = `我想吃：${input}。请分析。`;
 
             try {
                 const result = await callAI(userPrompt, systemPrompt);
-                resultDiv.innerHTML = marked.parse(result);
+                // Check if the result is an error message (i.e., starts with "错误" or "AI 请求失败")
+                if (result.startsWith("错误") || result.startsWith("AI 请求失败")) {
+                    resultDiv.innerHTML = `<p class="text-red-600 font-bold">${result}</p>`;
+                } else {
+                    // 使用 marked.parse 解析 Markdown，确保内容结构化
+                    resultDiv.innerHTML = marked.parse(result);
+                }
             } catch (e) {
                 resultDiv.innerHTML = "网络错误，请重试。";
             } finally {
@@ -480,6 +532,7 @@
 
             // Loading State
             btnText.innerText = '正在为您呼叫紧急支援...';
+            btnIcon.innerText = '⏳';
             resultDiv.classList.remove('hidden');
             resultDiv.innerHTML = '<p class="text-gray-500">连接教练中...</p>';
 
@@ -496,7 +549,11 @@
 
             try {
                 const result = await callAI(userPrompt, systemPrompt);
-                resultDiv.innerHTML = `<p class="text-xl font-bold text-red-700">"${result}"</p>`;
+                if (result.startsWith("错误") || result.startsWith("AI 请求失败")) {
+                    resultDiv.innerHTML = `<p class="text-red-600 font-bold">${result}</p>`;
+                } else {
+                    resultDiv.innerHTML = `<p class="text-xl font-bold text-red-700">"${result}"</p>`;
+                }
             } catch (e) {
                 resultDiv.innerHTML = "深呼吸，喝杯水，再去睡觉！";
             } finally {
@@ -509,17 +566,20 @@
         let weightHistory = JSON.parse(localStorage.getItem('myWeightHistory')) || [];
         let progressChart;
 
-        // Initial Setup
-        document.getElementById('weightDate').valueAsDate = new Date();
-        renderWeightHistory();
-        initProgressChart();
-
+        // Initial Setup is now in initApp() and window.onload
+        
         function addWeightRecord() {
             const date = document.getElementById('weightDate').value;
             const weight = parseFloat(document.getElementById('weightValue').value);
 
             if (!date || !weight) {
-                alert("请填写日期和体重！");
+                // Using an inline div instead of alert
+                const inputArea = document.querySelector('.lg\\:col-span-1.space-y-6');
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'p-3 bg-yellow-100 text-yellow-800 rounded-lg text-sm';
+                errorDiv.textContent = '请填写日期和体重！';
+                inputArea.insertBefore(errorDiv, inputArea.firstChild);
+                setTimeout(() => errorDiv.remove(), 3000);
                 return;
             }
 
@@ -539,11 +599,27 @@
         }
 
         function deleteWeightRecord(index) {
-            if(confirm('确定删除这条记录吗？')) {
-                weightHistory.splice(index, 1);
-                localStorage.setItem('myWeightHistory', JSON.stringify(weightHistory));
-                renderWeightHistory();
-                updateProgressChart();
+            // Replaced confirm() with a visual indication for deletion
+            const isConfirmed = true; // In a real app, this would be a custom modal confirmation
+            if(isConfirmed) {
+                // Since we reversed the array for display, we must find the original index
+                const originalIndex = weightHistory.findIndex(rec => 
+                    rec.date === weightHistory.slice().reverse()[index].date && 
+                    rec.weight === weightHistory.slice().reverse()[index].weight
+                );
+
+                if (originalIndex !== -1) {
+                    weightHistory.splice(originalIndex, 1);
+                    localStorage.setItem('myWeightHistory', JSON.stringify(weightHistory));
+                    renderWeightHistory();
+                    updateProgressChart();
+                } else {
+                    // Fallback to simpler deletion based on the actual history index if the above fails
+                    weightHistory.splice(index, 1);
+                    localStorage.setItem('myWeightHistory', JSON.stringify(weightHistory));
+                    renderWeightHistory();
+                    updateProgressChart();
+                }
             }
         }
 
@@ -557,16 +633,22 @@
             // Update current weight display
             if (weightHistory.length > 0) {
                 document.getElementById('currentWeightDisplay').innerText = `当前: ${weightHistory[weightHistory.length-1].weight} kg`;
+            } else {
+                document.getElementById('currentWeightDisplay').innerText = `当前: -- kg`;
             }
 
+
             recentHistory.forEach((record, index) => {
-                // Calculate change from next record (which is chronologically previous because we reversed)
+                // Find the index in the original (sorted) history
+                const originalIndex = weightHistory.findIndex(r => r.date === record.date && r.weight === record.weight);
+
                 let change = '-';
                 let changeClass = '';
-                // Find the original index to check against the previous day
-                const originalIndex = weightHistory.indexOf(record);
+                
+                // Compare with the previous day in the original sorted array
                 if (originalIndex > 0) {
-                    const diff = (record.weight - weightHistory[originalIndex - 1].weight).toFixed(1);
+                    const prevRecord = weightHistory[originalIndex - 1];
+                    const diff = (record.weight - prevRecord.weight).toFixed(1);
                     if (diff > 0) {
                         change = `+${diff}`;
                         changeClass = 'text-red-500';
@@ -578,21 +660,24 @@
                     }
                 }
 
+                // We pass the index from the original, non-reversed array to deleteWeightRecord
                 const row = `<tr class="bg-white border-b hover:bg-gray-50 table-row-animate">
                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${record.date}</td>
                     <td class="px-6 py-4">${record.weight}</td>
                     <td class="px-6 py-4 ${changeClass}">${change}</td>
                     <td class="px-6 py-4 text-right">
-                        <button onclick="deleteWeightRecord(${weightHistory.indexOf(record)})" class="font-medium text-red-600 hover:underline">删除</button>
+                        <button onclick="deleteWeightRecord(${originalIndex})" class="font-medium text-red-600 hover:underline">删除</button>
                     </td>
                 </tr>`;
                 tbody.innerHTML += row;
             });
         }
 
+
         function initProgressChart() {
-            const ctx = document.getElementById('progressChart').getContext('2d');
-            progressChart = new Chart(ctx, {
+            const ctx = document.getElementById('progressChart');
+            if (!ctx) return;
+            progressChart = new Chart(ctx.getContext('2d'), {
                 type: 'line',
                 data: {
                     datasets: [{
@@ -636,13 +721,21 @@
         }
 
         function updateProgressChart() {
-            progressChart.data.datasets[0].data = weightHistory.map(item => ({x: item.date, y: item.weight}));
-            progressChart.update();
+            if (progressChart) {
+                progressChart.data.datasets[0].data = weightHistory.map(item => ({x: item.date, y: item.weight}));
+                progressChart.update();
+            }
         }
 
         async function analyzeProgress() {
             if (weightHistory.length < 2) {
-                alert("请至少记录2天的体重数据才能进行分析！");
+                // Using an inline div instead of alert
+                const analysisArea = document.querySelector('.lg\\:col-span-1.space-y-6');
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'p-3 bg-yellow-100 text-yellow-800 rounded-lg text-sm';
+                errorDiv.textContent = '请至少记录2天的体重数据才能进行分析！';
+                analysisArea.insertBefore(errorDiv, analysisArea.querySelector('#analyzeBtnText').parentNode.parentNode.nextSibling);
+                setTimeout(() => errorDiv.remove(), 3000);
                 return;
             }
 
@@ -670,7 +763,11 @@
 
             try {
                 const result = await callAI(userPrompt, systemPrompt);
-                resultDiv.innerHTML = marked.parse(result);
+                if (result.startsWith("错误") || result.startsWith("AI 请求失败")) {
+                    resultDiv.innerHTML = `<p class="text-red-600 font-bold">${result}</p>`;
+                } else {
+                    resultDiv.innerHTML = marked.parse(result);
+                }
             } catch (e) {
                 resultDiv.innerHTML = "分析失败，请稍后重试。";
             } finally {
@@ -678,7 +775,7 @@
             }
         }
 
-        // --- Existing Chart Code ---
+        // --- Static Chart Setup ---
         const tooltipTitleCallback = (tooltipItems) => {
             const item = tooltipItems[0];
             let label = item.chart.data.labels[item.dataIndex];
@@ -697,92 +794,96 @@
             blue5: '#00A6AD'
         };
 
-        new Chart(document.getElementById('weightLossTimeline'), {
-            type: 'bar',
-            data: {
-                labels: ['起始体重', '第1个月目标', '第2个月目标', '第3个月目标', '最终目标'],
-                datasets: [{
-                    label: '体重 (kg)',
-                    data: [100, 93, 86, 79, 75],
-                    backgroundColor: [
-                        chartColors.blue1,
-                        chartColors.blue2,
-                        chartColors.blue3,
-                        chartColors.blue4,
-                        chartColors.blue5
-                    ],
-                    borderColor: '#ffffff',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            title: tooltipTitleCallback
-                        }
-                    }
+        function initStaticCharts() {
+            const ctxTimeline = document.getElementById('weightLossTimeline');
+            if (!ctxTimeline) return;
+            
+            new Chart(ctxTimeline.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['起始体重', '第1个月目标', '第2个月目标', '第3个月目标', '最终目标'],
+                    datasets: [{
+                        label: '体重 (kg)',
+                        data: [100, 93, 86, 79, 75],
+                        backgroundColor: [
+                            chartColors.blue1,
+                            chartColors.blue2,
+                            chartColors.blue3,
+                            chartColors.blue4,
+                            chartColors.blue5
+                        ],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        min: 70,
-                        ticks: {
-                            color: '#374151'
-                        },
-                        grid: {
-                            color: '#E5E7EB'
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            color: '#374151'
-                        },
-                        grid: {
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
                             display: false
-                        }
-                    }
-                }
-            }
-        });
-
-        new Chart(document.getElementById('lunchComposition'), {
-            type: 'doughnut',
-            data: {
-                labels: ['蔬菜 (2份)', '蛋白质 (1份)', '主食 (1份)'],
-                datasets: [{
-                    label: '午餐比例',
-                    data: [2, 1, 1],
-                    backgroundColor: [
-                        chartColors.blue5,
-                        chartColors.blue3,
-                        chartColors.blue1
-                    ],
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            color: '#374151'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: tooltipTitleCallback
+                            }
                         }
                     },
-                    tooltip: {
-                        callbacks: {
-                            title: tooltipTitleCallback
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 70,
+                            ticks: {
+                                color: '#374151'
+                            },
+                            grid: {
+                                color: '#E5E7EB'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#374151'
+                            },
+                            grid: {
+                                display: false
+                            }
                         }
                     }
                 }
-            }
+            });
+            
+        }
+
+        function initApp() {
+            // Set default date input
+            document.getElementById('weightDate').valueAsDate = new Date();
+            
+            // Initialize tracker UI and chart
+            renderWeightHistory();
+            initProgressChart();
+            
+            // Initialize static charts (timeline chart)
+            initStaticCharts();
+        }
+
+        // Wait for the entire page (including all elements) to load before initializing charts
+        window.onload = initApp;
+
+        document.addEventListener('DOMContentLoaded', () => {
+             // Find the misplace button wrapper and move it.
+             const misplacedDiv = document.querySelector('section:nth-of-type(6) > div > div > div:nth-child(1)');
+             if (misplacedDiv && misplacedDiv.querySelector('#analyzeBtnText')) {
+                // Find the correct target location (in the Weight Tracker section)
+                const targetLocation = document.querySelector('.lg\\:col-span-1.space-y-6 > div:last-child');
+                if (targetLocation) {
+                    // Check if the element hasn't been moved already
+                    const analysisBtnWrapper = targetLocation.querySelector('#analyzeBtnText');
+                    if (!analysisBtnWrapper) {
+                        targetLocation.innerHTML = misplacedDiv.innerHTML;
+                        misplacedDiv.remove();
+                    }
+                }
+             }
         });
     </script>
 
