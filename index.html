@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4个月减重特训计划</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <!-- 引入 Markdown 解析库 (可选，用于美化 AI 输出) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .stat-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #4B5563;
+        }
+        /* AI Section Styles */
+        .ai-gradient {
+            background: linear-gradient(135deg, #004080 0%, #00A6AD 100%);
+        }
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #005A8D;
+            width: 20px;
+            height: 20px;
+            -webkit-animation: spin 1s linear infinite; /* Safari */
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .table-row-animate {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#004080] mb-4">🎯 39岁职场男性减重特训计划</h1>
+            <p class="text-xl text-gray-600">(糖尿病+痛风特别版)</p>
+        </header>
+
+        <!-- Weight Tracker Section (New) -->
+        <section class="mb-12 bg-white rounded-xl shadow-lg overflow-hidden border-t-4 border-[#007399]">
+            <div class="p-6 border-b border-gray-100">
+                <h2 class="text-3xl font-bold text-[#005A8D] flex items-center gap-3">
+                    ⚖️ 每日体重打卡站
+                </h2>
+                <p class="text-gray-500 mt-1">每天早上空腹记录，数据保存在本地。让数据成为你的动力。</p>
+            </div>
+
+            <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Input Area -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">选择日期</label>
+                        <input type="date" id="weightDate" class="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-[#007399]">
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">今日体重 (kg)</label>
+                        <input type="number" id="weightValue" step="0.1" placeholder="例如: 99.5" class="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-[#007399]">
+                    </div>
+                    <button onclick="addWeightRecord()" class="w-full bg-[#007399] hover:bg-[#005A8D] text-white font-bold py-3 px-4 rounded-lg transition shadow-md flex justify-center items-center gap-2">
+                        <span>➕ 记录体重</span>
+                    </button>
+                    
+                    <div class="border-t pt-4">
+                         <h3 class="font-bold text-gray-700 mb-2">🤖 AI 进度复盘</h3>
+                         <p class="text-xs text-gray-500 mb-3">让 Gemini 分析你的近期数据，找出问题或给予鼓励。</p>
+                         <button onclick="analyzeProgress()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition shadow-md flex justify-center items-center gap-2">
+                            <span id="analyzeBtnText">✨ 分析我的进度</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chart Area -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white p-2 rounded-lg h-full flex flex-col">
+                         <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-gray-700">体重趋势图</h3>
+                            <span class="text-sm text-gray-500" id="currentWeightDisplay">当前: -- kg</span>
+                         </div>
+                        <div class="chart-container flex-grow" style="height: 300px;">
+                            <canvas id="progressChart"></canvas>
+                        </div>
+                        <div id="analysisResult" class="hidden mt-4 p-4 bg-purple-50 border border-purple-100 rounded-lg text-sm text-purple-900"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent History List -->
+            <div class="px-6 pb-6">
+                <h3 class="font-bold text-gray-700 mb-4">最近记录</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-left text-gray-500">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">日期</th>
+                                <th scope="col" class="px-6 py-3">体重 (kg)</th>
+                                <th scope="col" class="px-6 py-3">变化</th>
+                                <th scope="col" class="px-6 py-3">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="weightHistoryBody">
+                            <!-- Rows will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Assistant Section -->
+        <section class="mb-12 bg-white rounded-xl shadow-lg overflow-hidden border-2 border-[#00A6AD]">
+            <div class="ai-gradient p-6 text-white">
+                <h2 class="text-3xl font-bold flex items-center justify-center gap-3">
+                    <span>✨</span> AI 智能健康顾问 <span>✨</span>
+                </h2>
+                <p class="text-center text-blue-100 mt-2">由 Gemini 大模型驱动，针对您的糖尿病和痛风体质提供实时建议</p>
+            </div>
+            
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Feature 1: Food Analyzer -->
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <h3 class="text-xl font-bold text-[#005A8D] mb-4 flex items-center">
+                        🍽️ 食物“扫雷”器
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-4">不确定食堂的这道菜能不能吃？输入菜名，AI 会根据您的病史（控糖+控酸）给出红绿灯判断。</p>
+                    <div class="flex gap-2 mb-4">
+                        <input type="text" id="foodInput" placeholder="例如：红烧肉、麻辣烫、清蒸鱼..." 
+                            class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00A6AD] focus:border-transparent outline-none">
+                        <button onclick="analyzeFood()" class="bg-[#007399] hover:bg-[#005A8D] text-white px-6 py-3 rounded-lg font-bold transition-colors flex items-center">
+                            <span id="foodBtnText">分析</span>
+                        </button>
+                    </div>
+                    <div id="foodResult" class="hidden bg-white p-4 rounded border border-gray-200 text-gray-700 text-sm leading-relaxed min-h-[100px]"></div>
+                </div>
+
+                <!-- Feature 2: SOS Motivation -->
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <h3 class="text-xl font-bold text-[#005A8D] mb-4 flex items-center">
+                        🆘 深夜“防破戒”急救
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-4">晚上11点饿得想点外卖？在下单前点击这个按钮，获取针对性的心理干预。</p>
+                    <button onclick="getMotivation()" class="w-full bg-red-500 hover:bg-red-600 text-white p-4 rounded-lg font-bold text-lg transition-colors shadow-md mb-4 flex justify-center items-center gap-2">
+                        <span id="sosBtnIcon">🚨</span> <span id="sosBtnText">我想点外卖！救救我！</span>
+                    </button>
+                    <div id="sosResult" class="hidden bg-red-50 p-4 rounded border border-red-100 text-red-800 italic text-center min-h-[80px] flex items-center justify-center"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">核心目标：4个月减重 25kg</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="stat-card">
+                    <div class="stat-number text-[#007399]">100<span class="text-2xl">kg</span></div>
+                    <div class="stat-label">当前体重</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number text-[#00A6AD]">75<span class="text-2xl">kg</span></div>
+                    <div class="stat-label">目标体重</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number text-[#008CA6]">25<span class="text-2xl">kg</span></div>
+                    <div class="stat-label">需减总重</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-lg shadow-md p-6 mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">4个月减重目标分解</h2>
+            <p class="text-center text-gray-600 mb-6">此图表显示了从100kg的起点到75kg的最终目标，每个月需要达到的阶段性体重。这是一个稳健的减重路径。</p>
+            <div class="chart-container">
+                <canvas id="weightLossTimeline"></canvas>
+            </div>
+        </section>
+        
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">核心策略：稳血糖 + 降嘌呤 + 优睡眠</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="stat-card bg-[#E0F7FA] border border-[#B2EBF2]">
+                    <div class="stat-number text-5xl mb-2">📈</div>
+                    <div class="stat-label font-bold text-[#007399]">稳定血糖 (防暴食)</div>
+                    <p class="text-gray-600 mt-2">中午必须吃主食，防止夜间低血糖导致失控性暴食。</p>
+                </div>
+                <div class="stat-card bg-[#E0F2F1] border border-[#B2DFDB]">
+                    <div class="stat-number text-5xl mb-2">💧</div>
+                    <div class="stat-label font-bold text-[#008CA6]">降低嘌呤 (防痛风)</div>
+                    <p class="text-gray-600 mt-2">严禁喝食堂肉汤和内脏。每日必须喝足3000ml水。</p>
+                </div>
+                <div class="stat-card bg-[#F1F8E9] border border-[#DCEDC8]">
+                    <div class="stat-number text-5xl mb-2">😴</div>
+                    <div class="stat-label font-bold text-[#689F38]">改善睡眠 (防夜宵)</div>
+                    <p class="text-gray-600 mt-2">下午4点后严禁咖啡因，保证11点前入睡，避免饥饿素爆发。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-lg shadow-md p-6 mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">🛑 “保命”原则：四大禁令</h2>
+            <ul class="space-y-4">
+                <li class="flex items-center p-4 bg-red-50 rounded-lg border border-red-200">
+                    <span class="text-4xl mr-4">❌</span>
+                    <div>
+                        <h3 class="font-bold text-red-800 text-xl">绝对禁止喝食堂的“免费汤”</h3>
+                        <p class="text-red-700">原因是：高嘌呤 + 高油脂，是痛风和肥胖的炸弹。</p>
+                    </div>
+                </li>
+                <li class="flex items-center p-4 bg-red-50 rounded-lg border border-red-200">
+                    <span class="text-4xl mr-4">❌</span>
+                    <div>
+                        <h3 class="font-bold text-red-800 text-xl">绝对禁止“完全不吃主食”</h3>
+                        <p class="text-red-700">原因是：会引发夜间严重低血糖，导致暴食碳水，前功尽弃。</p>
+                    </div>
+                </li>
+                <li class="flex items-center p-4 bg-red-50 rounded-lg border border-red-200">
+                    <span class="text-4xl mr-4">❌</span>
+                    <div>
+                        <h3 class="font-bold text-red-800 text-xl">晚上绝对禁止喝含咖啡因饮品</h3>
+                        <p class="text-red-700">原因是：咖啡因导致深夜兴奋无法入睡，是饥饿素爆发的元凶。</p>
+                    </div>
+                </li>
+                <li class="flex items-center p-4 bg-red-50 rounded-lg border border-red-200">
+                    <span class="text-4xl mr-4">❌</span>
+                    <div>
+                        <h3 class="font-bold text-red-800 text-xl">清理家中零食黑名单</h3>
+                        <p class="text-red-700">严禁：瓜子（热量炸弹）、香蕉（高糖）、一切外卖（高油高盐）。</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="bg-white rounded-lg shadow-md p-6 mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">🍽️ 食堂战术：午餐“过水”法</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 class="font-bold text-xl text-[#007399] mb-4">午餐完美比例</h3>
+                    <p class="text-gray-600 mb-6">这是你中午选菜的黄金比例。蔬菜占一半，蛋白质和主食各占四分之一，能最大程度稳定血糖。</p>
+                    <div class="chart-container" style="max-height: 300px;">
+                        <canvas id="lunchComposition"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-bold text-xl text-[#007399] mb-4">严格执行顺序和技巧</h3>
+                    <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                        <li><strong class="text-gray-900">进食顺序：</strong> 先喝水 ➔ 吃蔬菜 ➔ 吃肉 ➔ 最后吃主食。</li>
+                        <li><strong class="text-gray-900">主食（必吃）：</strong> 1拳头大小（优选杂粮饭、玉米）。</li>
+                        <li><strong class="text-gray-900">蛋白质：</strong> 优选去皮鸡鸭、淡水鱼、鸡蛋。</li>
+                        <li><strong class="text-gray-900">痛风警惕：</strong> 禁吃内脏、贝类、浓肉汤。</li>
+                        <li><strong class="text-gray-900">“过水”动作：</strong> 准备一杯温水，所有油腻炒菜必须涮油后再吃！</li>
+                        <li><strong class="text-gray-900">饭后运动：</strong> 必须散步1公里，消耗餐后血糖。</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">⏰ 每日严格执行时刻表</h2>
+            <div class="relative pl-8">
+                <div class="absolute left-4 top-0 bottom-0 w-1 bg-[#00A6AD] rounded"></div>
+                
+                <div class="relative mb-8">
+                    <div class="absolute -left-12 top-0 flex items-center justify-center w-10 h-10 bg-[#008CA6] text-white rounded-full font-bold">🌅</div>
+                    <div class="ml-4 p-6 bg-white rounded-lg shadow-md">
+                        <h3 class="font-bold text-xl text-[#007399] mb-2">07:00 - 09:00 早晨</h3>
+                        <ul class="list-disc list-inside text-gray-700">
+                            <li>起床喝 500ml 温水 (注意监测服药后的血糖)。</li>
+                            <li>保留瑞幸热美式（无糖），加速代谢。</li>
+                            <li>看书时保持背部挺直，收紧核心。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="relative mb-8">
+                    <div class="absolute -left-12 top-0 flex items-center justify-center w-10 h-10 bg-[#008CA6] text-white rounded-full font-bold">🌞</div>
+                    <div class="ml-4 p-6 bg-white rounded-lg shadow-md">
+                        <h3 class="font-bold text-xl text-[#007399] mb-2">12:00 午餐</h3>
+                        <p class="text-gray-700">严格执行“食堂战术”（见上图）。</p>
+                    </div>
+                </div>
+
+                <div class="relative mb-8">
+                    <div class="absolute -left-12 top-0 flex items-center justify-center w-10 h-10 bg-[#008CA6] text-white rounded-full font-bold">🌇</div>
+                    <div class="ml-4 p-6 bg-white rounded-lg shadow-md">
+                        <h3 class="font-bold text-xl text-[#007399] mb-2">16:00 防御性加餐</h3>
+                        <p class="text-gray-700">为防止晚餐失控。首选：一根黄瓜/小番茄 或 一小杯无糖酸奶。</p>
+                    </div>
+                </div>
+
+                <div class="relative mb-8">
+                    <div class="absolute -left-12 top-0 flex items-center justify-center w-10 h-10 bg-[#008CA6] text-white rounded-full font-bold">🌆</div>
+                    <div class="ml-4 p-6 bg-white rounded-lg shadow-md">
+                        <h3 class="font-bold text-xl text-[#007399] mb-2">18:30 - 19:00 晚餐</h3>
+                        <ul class="list-disc list-inside text-gray-700">
+                            <li>原则：清淡、低碳、早吃。</li>
+                            <li>内容：大量水煮菜 + 少量鸡胸肉/鸡蛋。</li>
+                            <li>饮品：<strong class="text-red-600">温热的白开水</strong>，绝对禁止咖啡。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="relative mb-8">
+                    <div class="absolute -left-12 top-0 flex items-center justify-center w-10 h-10 bg-[#008CA6] text-white rounded-full font-bold">🌙</div>
+                    <div class="ml-4 p-6 bg-white rounded-lg shadow-md">
+                        <h3 class="font-bold text-xl text-[#007399] mb-2">20:00 - 23:00 晚间习惯改良</h3>
+                        <ul class="list-disc list-inside text-gray-700">
+                            <li><strong class="text-gray-900">看书优化：</strong> 站着看30分钟，或边看书边靠墙蹲。</li>
+                            <li><strong class="text-gray-900">饥饿急救：</strong> 唯一允许的夜宵是【黄瓜】或【西红柿】。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">🥤 “无糖可乐”战略</h2>
+                <ul class="list-disc list-inside space-y-3 text-gray-700">
+                    <li><strong class="text-[#007399]">铁律1：</strong> 下午4点前喝完。晚餐后严禁（含咖啡因）。</li>
+                    <li><strong class="text-[#007399]">铁律2：</strong> 不能代替水。喝一听可乐，必须额外多喝一杯白水来排酸。</li>
+                    <li><strong class="text-[#007399]">铁律3：</strong> 作为“防暴食盾牌”。想吃甜点时先喝半瓶，能有效骗过大脑。</li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">🏃‍♂️ “微运动”策略</h2>
+                <ul class="list-disc list-inside space-y-3 text-gray-700">
+                    <li><strong class="text-[#007399]">午后（必做）：</strong> 散步1公里。</li>
+                    <li><strong class="text-[#007399]">看书时：</strong> 靠墙静蹲（1分钟 x 3组），提高胰岛素敏感性。</li>
+                    <li><strong class="text-[#007399]">睡前：</strong> 空中蹬车（50-100个），消耗最后的热量。</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer class="text-center p-6 bg-[#004080] text-white rounded-lg shadow-inner">
+            <h2 class="text-2xl font-bold mb-4">💊 特别提醒</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-yellow-100 text-yellow-800 p-4 rounded-lg">
+                    <strong class="block">药物调整！</strong>
+                    <p>随体重下降，必须监测血糖，并咨询医生调整降糖药量，防止低血糖！</p>
+                </div>
+                <div class="bg-blue-100 text-blue-800 p-4 rounded-lg">
+                    <strong class="block">痛风补水！</strong>
+                    <p>每天必须喝够 3000ml 水促进尿酸排泄。咖啡利尿，喝完要额外补水。</p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Gemini API Configuration ---
+        const apiKey = "gen-lang-client-0685637544"; // Environment will provide key
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        // --- Helper Function for API Calls ---
+        async function callGemini(prompt, systemInstruction = "") {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        systemInstruction: { parts: [{ text: systemInstruction }] }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                return "抱歉，AI 助手暂时开小差了，请稍后再试。";
+            }
+        }
+
+        // --- Feature 1: Food Analyzer ---
+        async function analyzeFood() {
+            const input = document.getElementById('foodInput').value;
+            if (!input) return;
+
+            const btnText = document.getElementById('foodBtnText');
+            const resultDiv = document.getElementById('foodResult');
+            
+            // Loading State
+            btnText.innerHTML = '<span class="loader"></span> 分析中...';
+            resultDiv.classList.remove('hidden');
+            resultDiv.innerHTML = '<p class="text-gray-500 text-center">正在查询 GI 值和嘌呤含量...</p>';
+
+            const systemPrompt = `你是一位专业的临床营养师，正在指导一位39岁的男性减重（目标100kg->75kg）。
+            重要病史：他患有【二型糖尿病】和【痛风】。
+            任务：分析用户输入的食物是否适合他吃。
+            输出格式要求：请用Markdown格式。
+            1. 首先给出一个Emoji红绿灯判断：🟢 (推荐/安全) / 🟡 (适量/小心) / 🔴 (禁止/危险)。
+            2. **血糖影响**：简述GI值或糖负荷。
+            3. **痛风影响**：简述嘌呤含量。
+            4. **建议**：如果不吃，给出替代方案；如果吃，给出分量建议。
+            保持语气专业但亲切。`;
+
+            const userPrompt = `我想吃：${input}。请分析。`;
+
+            try {
+                const result = await callGemini(userPrompt, systemPrompt);
+                resultDiv.innerHTML = marked.parse(result);
+            } catch (e) {
+                resultDiv.innerHTML = "网络错误，请重试。";
+            } finally {
+                btnText.innerText = '分析';
+            }
+        }
+
+        // --- Feature 2: SOS Motivation ---
+        async function getMotivation() {
+            const btnText = document.getElementById('sosBtnText');
+            const btnIcon = document.getElementById('sosBtnIcon');
+            const resultDiv = document.getElementById('sosResult');
+
+            // Loading State
+            btnText.innerText = '正在为您呼叫紧急支援...';
+            resultDiv.classList.remove('hidden');
+            resultDiv.innerHTML = '<p class="text-gray-500">连接教练中...</p>';
+
+            const systemPrompt = `你是一位严厉但负责任的减重教练。你的学员是39岁男性，100kg，有糖尿病和痛风。
+            现在的场景是：深夜，他想点外卖/暴食。
+            任务：给出一句简短有力的话（不超过50字），打消他的念头。
+            策略：
+            1. 可以提醒他明早的血糖数值。
+            2. 可以提醒他痛风发作时的剧痛。
+            3. 可以提醒他想减到75kg的目标。
+            语气要像当头棒喝，或者像兄弟一样劝导。不要长篇大论。`;
+
+            const userPrompt = "我想点外卖，我很饿，我要控制不住了！";
+
+            try {
+                const result = await callGemini(userPrompt, systemPrompt);
+                resultDiv.innerHTML = `<p class="text-xl font-bold text-red-700">"${result}"</p>`;
+            } catch (e) {
+                resultDiv.innerHTML = "深呼吸，喝杯水，再去睡觉！";
+            } finally {
+                btnText.innerText = '我想点外卖！救救我！';
+                btnIcon.innerText = '🚨';
+            }
+        }
+
+        // --- Weight Tracker Logic ---
+        let weightHistory = JSON.parse(localStorage.getItem('myWeightHistory')) || [];
+        let progressChart;
+
+        // Initial Setup
+        document.getElementById('weightDate').valueAsDate = new Date();
+        renderWeightHistory();
+        initProgressChart();
+
+        function addWeightRecord() {
+            const date = document.getElementById('weightDate').value;
+            const weight = parseFloat(document.getElementById('weightValue').value);
+
+            if (!date || !weight) {
+                alert("请填写日期和体重！");
+                return;
+            }
+
+            // Add new record
+            weightHistory.push({ date, weight });
+            
+            // Sort by date
+            weightHistory.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            // Save to LocalStorage
+            localStorage.setItem('myWeightHistory', JSON.stringify(weightHistory));
+
+            // Update UI
+            renderWeightHistory();
+            updateProgressChart();
+            document.getElementById('weightValue').value = '';
+        }
+
+        function deleteWeightRecord(index) {
+            if(confirm('确定删除这条记录吗？')) {
+                weightHistory.splice(index, 1);
+                localStorage.setItem('myWeightHistory', JSON.stringify(weightHistory));
+                renderWeightHistory();
+                updateProgressChart();
+            }
+        }
+
+        function renderWeightHistory() {
+            const tbody = document.getElementById('weightHistoryBody');
+            tbody.innerHTML = '';
+            
+            // Show last 5 records, reversed (newest first) for list
+            const recentHistory = [...weightHistory].reverse().slice(0, 5);
+            
+            // Update current weight display
+            if (weightHistory.length > 0) {
+                document.getElementById('currentWeightDisplay').innerText = `当前: ${weightHistory[weightHistory.length-1].weight} kg`;
+            }
+
+            recentHistory.forEach((record, index) => {
+                // Calculate change from next record (which is chronologically previous because we reversed)
+                let change = '-';
+                let changeClass = '';
+                // Find the original index to check against the previous day
+                const originalIndex = weightHistory.indexOf(record);
+                if (originalIndex > 0) {
+                    const diff = (record.weight - weightHistory[originalIndex - 1].weight).toFixed(1);
+                    if (diff > 0) {
+                        change = `+${diff}`;
+                        changeClass = 'text-red-500';
+                    } else if (diff < 0) {
+                        change = `${diff}`;
+                        changeClass = 'text-green-600 font-bold';
+                    } else {
+                        change = '0.0';
+                    }
+                }
+
+                const row = `<tr class="bg-white border-b hover:bg-gray-50 table-row-animate">
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${record.date}</td>
+                    <td class="px-6 py-4">${record.weight}</td>
+                    <td class="px-6 py-4 ${changeClass}">${change}</td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="deleteWeightRecord(${weightHistory.indexOf(record)})" class="font-medium text-red-600 hover:underline">删除</button>
+                    </td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function initProgressChart() {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: '体重进程 (kg)',
+                        data: weightHistory.map(item => ({x: item.date, y: item.weight})),
+                        borderColor: '#007399',
+                        backgroundColor: 'rgba(0, 115, 153, 0.1)',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#007399',
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                displayFormats: {
+                                    day: 'MM-dd'
+                                }
+                            },
+                            grid: { display: false }
+                        },
+                        y: {
+                            min: 70, // Base min on goal
+                            suggestedMax: 105,
+                            grid: { color: '#f3f4f6' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function updateProgressChart() {
+            progressChart.data.datasets[0].data = weightHistory.map(item => ({x: item.date, y: item.weight}));
+            progressChart.update();
+        }
+
+        async function analyzeProgress() {
+            if (weightHistory.length < 2) {
+                alert("请至少记录2天的体重数据才能进行分析！");
+                return;
+            }
+
+            const btnText = document.getElementById('analyzeBtnText');
+            const resultDiv = document.getElementById('analysisResult');
+            
+            btnText.innerHTML = '<span class="loader"></span> AI 思考中...';
+            resultDiv.classList.remove('hidden');
+            resultDiv.innerHTML = '正在读取您的体重数据并分析趋势...';
+
+            // Prepare data string for AI
+            const recentData = weightHistory.slice(-14); // Last 14 records max
+            const dataStr = recentData.map(r => `${r.date}: ${r.weight}kg`).join('\n');
+
+            const systemPrompt = `你是一位专业的体重管理教练。
+            用户画像：39岁男性，二型糖尿病，痛风，初始体重100kg，目标75kg。
+            任务：根据用户的体重记录进行“复盘”。
+            分析角度：
+            1. 总体趋势（掉秤快/慢/平台期）。
+            2. 如果有反弹，给予安慰和原因推测（如可能水肿、聚餐）。
+            3. 给予强烈的鼓励。
+            请用Markdown格式，简短有力，不超过100字。`;
+
+            const userPrompt = `这是我最近的体重记录：\n${dataStr}\n请分析我的进度。`;
+
+            try {
+                const result = await callGemini(userPrompt, systemPrompt);
+                resultDiv.innerHTML = marked.parse(result);
+            } catch (e) {
+                resultDiv.innerHTML = "分析失败，请稍后重试。";
+            } finally {
+                btnText.innerText = '✨ 分析我的进度';
+            }
+        }
+
+        // --- Existing Chart Code ---
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            } else {
+                return label;
+            }
+        };
+
+        const chartColors = {
+            blue1: '#004080',
+            blue2: '#005A8D',
+            blue3: '#007399',
+            blue4: '#008CA6',
+            blue5: '#00A6AD'
+        };
+
+        new Chart(document.getElementById('weightLossTimeline'), {
+            type: 'bar',
+            data: {
+                labels: ['起始体重', '第1个月目标', '第2个月目标', '第3个月目标', '最终目标'],
+                datasets: [{
+                    label: '体重 (kg)',
+                    data: [100, 93, 86, 79, 75],
+                    backgroundColor: [
+                        chartColors.blue1,
+                        chartColors.blue2,
+                        chartColors.blue3,
+                        chartColors.blue4,
+                        chartColors.blue5
+                    ],
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 70,
+                        ticks: {
+                            color: '#374151'
+                        },
+                        grid: {
+                            color: '#E5E7EB'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#374151'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('lunchComposition'), {
+            type: 'doughnut',
+            data: {
+                labels: ['蔬菜 (2份)', '蛋白质 (1份)', '主食 (1份)'],
+                datasets: [{
+                    label: '午餐比例',
+                    data: [2, 1, 1],
+                    backgroundColor: [
+                        chartColors.blue5,
+                        chartColors.blue3,
+                        chartColors.blue1
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#374151'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
