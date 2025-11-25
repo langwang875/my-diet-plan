@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>减重特训</title>
+    <title>减重特训</title><!-- 1. 标题修改 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
@@ -113,7 +113,7 @@
                 <h2 class="text-3xl font-bold text-[#005A8D] flex items-center gap-3">
                     ⚖️ 每日体重打卡站
                 </h2>
-                <p class="text-gray-500 mt-1">每天早上空腹记录，数据保存在本地。让数据成为你的动力。</p>
+                <p class="text-gray-500 mt-1">每天早上空腹记录。为了方便，**输入和显示单位都是斤** (内部存储为 kg)。</p>
             </div>
 
             <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -124,8 +124,9 @@
                         <input type="date" id="weightDate" class="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-[#007399]">
                     </div>
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">今日体重 (kg)</label>
-                        <input type="number" id="weightValue" step="0.1" placeholder="例如: 99.5" class="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-[#007399]">
+                        <!-- *** CHANGE: Input label changed to 斤 *** -->
+                        <label class="block text-sm font-bold text-gray-700 mb-2">今日体重 (斤)</label>
+                        <input type="number" id="weightValue" step="0.1" placeholder="例如: 199.0" class="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-[#007399]">
                     </div>
                     <button onclick="addWeightRecord()" class="w-full bg-[#007399] hover:bg-[#005A8D] text-white font-bold py-3 px-4 rounded-lg transition shadow-md flex justify-center items-center gap-2">
                         <span>➕ 记录体重</span>
@@ -145,7 +146,7 @@
                     <div class="bg-white p-2 rounded-lg h-full flex flex-col">
                          <div class="flex justify-between items-center mb-4">
                             <h3 class="font-bold text-gray-700">体重趋势图</h3>
-                            <span class="text-sm text-gray-500" id="currentWeightDisplay">当前: -- kg</span>
+                            <span class="text-sm text-gray-500" id="currentWeightDisplay">当前: -- 斤</span>
                          </div>
                         <div class="chart-container flex-grow" style="height: 300px;">
                             <canvas id="progressChart"></canvas>
@@ -163,7 +164,7 @@
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                             <tr>
                                 <th scope="col" class="px-6 py-3">日期</th>
-                                <th scope="col" class="px-6 py-3">体重 (kg)</th>
+                                <th scope="col" class="px-6 py-3">体重 (斤)</th>
                                 <th scope="col" class="px-6 py-3">变化</th>
                                 <th scope="col" class="px-6 py-3">操作</th>
                             </tr>
@@ -218,18 +219,19 @@
         </section>
 
         <section class="mb-12">
-            <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">核心目标：4个月减重 25kg</h2>
+            <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">核心目标：4个月减重 50斤</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="stat-card">
-                    <div class="stat-number text-[#007399]">100<span class="text-2xl">kg</span></div>
+                    <!-- Displayed weight in 斤 -->
+                    <div class="stat-number text-[#007399]" id="currentWeightStat">--<span class="text-2xl">斤</span></div>
                     <div class="stat-label">当前体重</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number text-[#00A6AD]">75<span class="text-2xl">kg</span></div>
+                    <div class="stat-number text-[#00A6AD]">150<span class="text-2xl">斤</span></div>
                     <div class="stat-label">目标体重</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number text-[#008CA6]">25<span class="text-2xl">kg</span></div>
+                    <div class="stat-number text-[#008CA6]">50<span class="text-2xl">斤</span></div>
                     <div class="stat-label">需减总重</div>
                 </div>
             </div>
@@ -237,7 +239,7 @@
 
         <section class="bg-white rounded-lg shadow-md p-6 mb-12">
             <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">4个月减重目标分解</h2>
-            <p class="text-center text-gray-600 mb-6">此图表显示了从100kg的起点到75kg的最终目标，每个月需要达到的阶段性体重。这是一个稳健的减重路径。</p>
+            <p class="text-center text-gray-600 mb-6">此图表显示了从200斤的起点到150斤的最终目标，每个月需要达到的阶段性体重。这是一个稳健的减重路径。</p>
             <div class="chart-container">
                 <canvas id="weightLossTimeline"></canvas>
             </div>
@@ -306,11 +308,11 @@
                     <h3 class="font-bold text-xl text-[#007399] mb-4">严格执行顺序和技巧</h3>
                     <ol class="list-decimal list-inside space-y-3 text-gray-700">
                         <li><strong class="text-gray-900">进食顺序：</strong> 先喝水 ➔ 吃蔬菜 ➔ 吃肉 ➔ 最后吃主食。</li>
-                        <li><strong class="text-gray-900">主食（必吃）：</strong> 1拳头大小（优选杂粮饭、玉米）。</li>
-                        <li><strong class="text-gray-900">蛋白质：</strong> 优选去皮鸡鸭、淡水鱼、鸡蛋。</li>
-                        <li><strong class="text-gray-900">痛风警惕：</strong> 禁吃内脏、贝类、浓肉汤。</li>
-                        <li><strong class="text-gray-900">“过水”动作：</strong> 准备一杯温水，所有油腻炒菜必须涮油后再吃！</li>
-                        <li><strong class="text-gray-900">饭后运动：</strong> 必须散步1公里，消耗餐后血糖。</li>
+                        <li><strong class="text-gray-900">主食（必吃）：：</strong> 1拳头大小（优选杂粮饭、玉米）。</li>
+                        <li><strong class="text-gray-900">蛋白质：：</strong> 优选去皮鸡鸭、淡水鱼、鸡蛋。</li>
+                        <li><strong class="text-gray-900">痛风警惕：：</strong> 禁吃内脏、贝类、浓肉汤。</li>
+                        <li><strong class="text-gray-900">“过水”动作：：</strong> 准备一杯温水，所有油腻炒菜必须涮油后再吃！</li>
+                        <li><strong class="text-gray-900">饭后运动：：</strong> 必须散步1公里，消耗餐后血糖。</li>
                     </ol>
                 </div>
             </div>
@@ -367,7 +369,7 @@
                         <h3 class="font-bold text-xl text-[#007399] mb-2">20:00 - 23:00 晚间习惯改良</h3>
                         <ul class="list-disc list-inside text-gray-700">
                             <li><strong class="text-gray-900">看书优化：</strong> 站着看30分钟，或边看书边靠墙蹲。</li>
-                            <li><strong class="text-gray-900">饥饿急救：</strong> 唯一允许的夜宵是【黄瓜】或【西红柿】。</li>
+                            <li><strong class="text-gray-900">饥饿急救：：</strong> 唯一允许的夜宵是【黄瓜】或【西红柿】。</li>
                         </ul>
                     </div>
                 </div>
@@ -379,16 +381,16 @@
                 <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">🥤 “无糖可乐”战略</h2>
                 <ul class="list-disc list-inside space-y-3 text-gray-700">
                     <li><strong class="text-[#007399]">铁律1：</strong> 下午4点前喝完。晚餐后严禁（含咖啡因）。</li>
-                    <li><strong class="text-[#007399]">铁律2：</strong> 不能代替水。喝一听可乐，必须额外多喝一杯白水来排酸。</li>
-                    <li><strong class="text-[#007399]">铁律3：</strong> 作为“防暴食盾牌”。想吃甜点时先喝半瓶，能有效骗过大脑。</li>
+                    <li><strong class="text-[#007399]">铁律2：：</strong> 不能代替水。喝一听可乐，必须额外多喝一杯白水来排酸。</li>
+                    <li><strong class="text-[#007399]">铁律3：：</strong> 作为“防暴食盾牌”。想吃甜点时先喝半瓶，能有效骗过大脑。</li>
                 </ul>
             </div>
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">🏃‍♂️ “微运动”策略</h2>
                 <ul class="list-disc list-inside space-y-3 text-gray-700">
-                    <li><strong class="text-[#007399]">午后（必做）：</strong> 散步1公里。</li>
-                    <li><strong class="text-[#007399]">看书时：</strong> 靠墙静蹲（1分钟 x 3组），提高胰岛素敏感性。</li>
-                    <li><strong class="text-[#007399]">睡前：</strong> 空中蹬车（50-100个），消耗最后的热量。</li>
+                    <li><strong class="text-[#007399]">午后（必做）：：</strong> 散步1公里。</li>
+                    <li><strong class="text-[#007399]">看书时：：</strong> 靠墙静蹲（1分钟 x 3组），提高胰岛素敏感性。</li>
+                    <li><strong class="text-[#007399]">睡前：：</strong> 空中蹬车（50-100个），消耗最后的热量。</li>
                 </ul>
             </div>
         </section>
@@ -416,7 +418,7 @@
         // 2. 将 Key 填入下方引号中
         // 注意：您的 Key "sk-a5c524e69b2642bf88e49beba1950552" 报告了【余额不足】错误 (402)。
         // 请在此处替换为您充值后的新 Key，否则 AI 功能将无法使用。
-        const apiKey = "sk-a5c524e69b2642bf88e49beba1950552"; // 请在此处填写您新的 DeepSeek API Key
+        const apiKey = "sk-a5c524e69b2642bf88e49beba1950552"; // 3. 嵌入用户提供的 Key
         
         // DeepSeek 配置 (无需 VPN，国内直连)
         const API_URL = "https://api.deepseek.com/chat/completions";
@@ -536,14 +538,17 @@
             resultDiv.classList.remove('hidden');
             resultDiv.innerHTML = '<p class="text-gray-500">连接教练中...</p>';
 
+            // 2. 优化系统提示词，增加回复丰富度
             const systemPrompt = `你是一位严厉但负责任的减重教练。你的学员是39岁男性，100kg，有糖尿病和痛风。
             现在的场景是：深夜，他想点外卖/暴食。
             任务：给出一句简短有力的话（不超过50字），打消他的念头。
-            策略：
-            1. 可以提醒他明早的血糖数值。
-            2. 可以提醒他痛风发作时的剧痛。
-            3. 可以提醒他想减到75kg的目标。
-            语气要像当头棒喝，或者像兄弟一样劝导。不要长篇大论。`;
+            关键：你必须在每次回复中变化劝诫的角度和语气。随机选择以下角度之一：
+            1. 提醒他【痛风发作】时的剧痛，和高嘌呤食物的危险。
+            2. 提醒他明早【血糖数值】会飙升，以及前功尽弃的代价。
+            3. 提醒他距离【75kg目标】只差一步，现在放弃非常可惜。
+            4. 提醒他前几天【体重下降】的努力和成就，不要让一顿外卖毁了它。
+            5. 提醒他【优质睡眠】才是对抗饥饿的最好方法。
+            输出：只需输出那一句劝诫的话，不需要任何解释或Markdown格式。`;
 
             const userPrompt = "我想点外卖，我很饿，我要控制不住了！";
 
@@ -563,28 +568,89 @@
         }
 
         // --- Weight Tracker Logic ---
-        let weightHistory = JSON.parse(localStorage.getItem('myWeightHistory')) || [];
+        // *** START: Initial data provided by user (stored in kg, converted from 斤) ***
+        let weightHistory = JSON.parse(localStorage.getItem('myWeightHistory')) || [
+            { date: '2025-10-09', weight: 101.35 },
+            { date: '2025-10-10', weight: 101.70 },
+            { date: '2025-10-11', weight: 100.05 },
+            { date: '2025-10-12', weight: 100.05 },
+            { date: '2025-10-13', weight: 100.35 },
+            { date: '2025-10-14', weight: 100.05 },
+            { date: '2025-10-15', weight: 100.10 },
+            { date: '2025-10-16', weight: 99.70 },
+            { date: '2025-10-17', weight: 98.95 },
+            { date: '2025-10-18', weight: 99.50 },
+            { date: '2025-10-19', weight: 100.00 },
+            { date: '2025-10-20', weight: 100.50 },
+            { date: '2025-10-21', weight: 99.60 },
+            { date: '2025-10-22', weight: 99.30 },
+            { date: '2025-10-23', weight: 98.20 },
+            { date: '2025-10-24', weight: 98.95 },
+            { date: '2025-10-25', weight: 99.20 },
+            { date: '2025-10-26', weight: 99.95 },
+            { date: '2025-10-27', weight: 100.40 },
+            { date: '2025-10-28', weight: 99.80 },
+            { date: '2025-10-29', weight: 99.50 },
+            { date: '2025-10-30', weight: 99.35 },
+            { date: '2025-10-31', weight: 99.55 },
+            { date: '2025-11-01', weight: 100.00 },
+            { date: '2025-11-02', weight: 100.50 },
+            { date: '2025-11-03', weight: 101.00 },
+            { date: '2025-11-04', weight: 99.80 },
+            { date: '2025-11-05', weight: 99.15 },
+            { date: '2025-11-06', weight: 98.55 },
+            { date: '2025-11-07', weight: 98.80 },
+            { date: '2025-11-08', weight: 99.25 },
+            { date: '2025-11-09', weight: 99.65 },
+            { date: '2025-11-10', weight: 100.10 },
+            { date: '2025-11-11', weight: 99.15 },
+            { date: '2025-11-12', weight: 98.25 },
+            { date: '2025-11-13', weight: 98.25 },
+            { date: '2025-11-14', weight: 98.30 },
+            { date: '2025-11-15', weight: 98.40 },
+            { date: '2025-11-16', weight: 98.45 },
+            { date: '2025-11-17', weight: 98.55 },
+            { date: '2025-11-18', weight: 98.65 },
+            { date: '2025-11-19', weight: 98.55 },
+            { date: '2025-11-20', weight: 98.45 },
+            { date: '2025-11-21', weight: 98.35 },
+            { date: '2025-11-22', weight: 98.25 },
+            { date: '2025-11-23', weight: 98.60 },
+            { date: '2025-11-24', weight: 99.10 },
+            { date: '2025-11-25', weight: 98.20 } // Current weight is 196.4 斤
+        ];
+        // *** END: Initial data provided by user (stored in kg, converted from 斤) ***
+
         let progressChart;
 
-        // Initial Setup is now in initApp() and window.onload
-        
         function addWeightRecord() {
             const date = document.getElementById('weightDate').value;
-            const weight = parseFloat(document.getElementById('weightValue').value);
+            const weightInJin = parseFloat(document.getElementById('weightValue').value); // Input is now in 斤
 
-            if (!date || !weight) {
+            if (!date || !weightInJin || weightInJin <= 0) {
                 // Using an inline div instead of alert
                 const inputArea = document.querySelector('.lg\\:col-span-1.space-y-6');
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'p-3 bg-yellow-100 text-yellow-800 rounded-lg text-sm';
-                errorDiv.textContent = '请填写日期和体重！';
+                errorDiv.textContent = '请填写日期和有效体重值 (斤)！';
                 inputArea.insertBefore(errorDiv, inputArea.firstChild);
                 setTimeout(() => errorDiv.remove(), 3000);
                 return;
             }
 
-            // Add new record
-            weightHistory.push({ date, weight });
+            // *** CHANGE: Convert 斤 to kg for internal storage ***
+            const weightInKg = weightInJin / 2; 
+
+            // Check for existing date and update if found
+            const existingIndex = weightHistory.findIndex(record => record.date === date);
+
+            if (existingIndex !== -1) {
+                // Update existing record
+                weightHistory[existingIndex].weight = weightInKg;
+            } else {
+                // Add new record (store in kg)
+                weightHistory.push({ date, weight: weightInKg });
+            }
             
             // Sort by date
             weightHistory.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -602,24 +668,11 @@
             // Replaced confirm() with a visual indication for deletion
             const isConfirmed = true; // In a real app, this would be a custom modal confirmation
             if(isConfirmed) {
-                // Since we reversed the array for display, we must find the original index
-                const originalIndex = weightHistory.findIndex(rec => 
-                    rec.date === weightHistory.slice().reverse()[index].date && 
-                    rec.weight === weightHistory.slice().reverse()[index].weight
-                );
-
-                if (originalIndex !== -1) {
-                    weightHistory.splice(originalIndex, 1);
-                    localStorage.setItem('myWeightHistory', JSON.stringify(weightHistory));
-                    renderWeightHistory();
-                    updateProgressChart();
-                } else {
-                    // Fallback to simpler deletion based on the actual history index if the above fails
-                    weightHistory.splice(index, 1);
-                    localStorage.setItem('myWeightHistory', JSON.stringify(weightHistory));
-                    renderWeightHistory();
-                    updateProgressChart();
-                }
+                // We are using the index from the original, sorted array here
+                weightHistory.splice(index, 1);
+                localStorage.setItem('myWeightHistory', JSON.stringify(weightHistory));
+                renderWeightHistory();
+                updateProgressChart();
             }
         }
 
@@ -630,16 +683,21 @@
             // Show last 5 records, reversed (newest first) for list
             const recentHistory = [...weightHistory].reverse().slice(0, 5);
             
-            // Update current weight display
+            // Update current weight display (converted to 斤)
+            const currentWeightStat = document.getElementById('currentWeightStat');
             if (weightHistory.length > 0) {
-                document.getElementById('currentWeightDisplay').innerText = `当前: ${weightHistory[weightHistory.length-1].weight} kg`;
+                const currentWeightKg = weightHistory[weightHistory.length-1].weight;
+                const currentWeightJin = (currentWeightKg * 2).toFixed(1);
+                document.getElementById('currentWeightDisplay').innerText = `当前: ${currentWeightJin} 斤`;
+                currentWeightStat.innerHTML = `${currentWeightJin}<span class="text-2xl">斤</span>`;
             } else {
-                document.getElementById('currentWeightDisplay').innerText = `当前: -- kg`;
+                document.getElementById('currentWeightDisplay').innerText = `当前: -- 斤`;
+                currentWeightStat.innerHTML = `--<span class="text-2xl">斤</span>`;
             }
 
 
-            recentHistory.forEach((record, index) => {
-                // Find the index in the original (sorted) history
+            recentHistory.forEach((record, reverseIndex) => {
+                // Find the index in the original (sorted) history to ensure we use the correct index for deletion
                 const originalIndex = weightHistory.findIndex(r => r.date === record.date && r.weight === record.weight);
 
                 let change = '-';
@@ -648,22 +706,27 @@
                 // Compare with the previous day in the original sorted array
                 if (originalIndex > 0) {
                     const prevRecord = weightHistory[originalIndex - 1];
-                    const diff = (record.weight - prevRecord.weight).toFixed(1);
-                    if (diff > 0) {
-                        change = `+${diff}`;
+                    const diffKg = (record.weight - prevRecord.weight); // diff in kg
+                    const diffJin = (diffKg * 2).toFixed(1); // diff in 斤
+                    
+                    if (diffJin > 0) {
+                        change = `+${diffJin}`; // Display diff in 斤
                         changeClass = 'text-red-500';
-                    } else if (diff < 0) {
-                        change = `${diff}`;
+                    } else if (diffJin < 0) {
+                        change = `${diffJin}`; // Display diff in 斤
                         changeClass = 'text-green-600 font-bold';
                     } else {
                         change = '0.0';
                     }
                 }
 
+                // Display weight in 斤
+                const weightInJin = (record.weight * 2).toFixed(1);
+
                 // We pass the index from the original, non-reversed array to deleteWeightRecord
                 const row = `<tr class="bg-white border-b hover:bg-gray-50 table-row-animate">
                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${record.date}</td>
-                    <td class="px-6 py-4">${record.weight}</td>
+                    <td class="px-6 py-4">${weightInJin}</td><!-- 显示为 斤 -->
                     <td class="px-6 py-4 ${changeClass}">${change}</td>
                     <td class="px-6 py-4 text-right">
                         <button onclick="deleteWeightRecord(${originalIndex})" class="font-medium text-red-600 hover:underline">删除</button>
@@ -681,8 +744,8 @@
                 type: 'line',
                 data: {
                     datasets: [{
-                        label: '体重进程 (kg)',
-                        data: weightHistory.map(item => ({x: item.date, y: item.weight})),
+                        label: '体重进程 (kg)', // 保持图表数据为 kg, 标签可显示 kg
+                        data: weightHistory.map(item => ({x: item.date, y: item.weight})), // Data is in kg
                         borderColor: '#007399',
                         backgroundColor: 'rgba(0, 115, 153, 0.1)',
                         borderWidth: 2,
@@ -708,9 +771,13 @@
                             grid: { display: false }
                         },
                         y: {
-                            min: 70, // Base min on goal
+                            min: 70, // Base min on goal in kg
                             suggestedMax: 105,
-                            grid: { color: '#f3f4f6' }
+                            grid: { color: '#f3f4f6' },
+                             title: {
+                                display: true,
+                                text: '体重 (kg)' // 明确 Y 轴单位
+                            }
                         }
                     },
                     plugins: {
@@ -748,10 +815,11 @@
 
             // Prepare data string for AI
             const recentData = weightHistory.slice(-14); // Last 14 records max
-            const dataStr = recentData.map(r => `${r.date}: ${r.weight}kg`).join('\n');
+            // IMPORTANT: Send data to AI in the expected format (kg) but add 斤 in the prompt for clarity
+            const dataStr = recentData.map(r => `${r.date}: ${(r.weight * 2).toFixed(1)}斤 (${r.weight.toFixed(1)}kg)`).join('\n'); 
 
             const systemPrompt = `你是一位专业的体重管理教练。
-            用户画像：39岁男性，二型糖尿病，痛风，初始体重100kg，目标75kg。
+            用户画像：39岁男性，二型糖尿病，痛风，初始体重100kg (200斤)，目标75kg (150斤)。
             任务：根据用户的体重记录进行“复盘”。
             分析角度：
             1. 总体趋势（掉秤快/慢/平台期）。
@@ -759,7 +827,7 @@
             3. 给予强烈的鼓励。
             请用Markdown格式，简短有力，不超过100字。`;
 
-            const userPrompt = `这是我最近的体重记录：\n${dataStr}\n请分析我的进度。`;
+            const userPrompt = `这是我最近的体重记录（单位是斤/kg）：\n${dataStr}\n请分析我的进度。`;
 
             try {
                 const result = await callAI(userPrompt, systemPrompt);
@@ -803,8 +871,8 @@
                 data: {
                     labels: ['起始体重', '第1个月目标', '第2个月目标', '第3个月目标', '最终目标'],
                     datasets: [{
-                        label: '体重 (kg)',
-                        data: [100, 93, 86, 79, 75],
+                        label: '体重 (斤)', // 标签改为 斤
+                        data: [200, 186, 172, 158, 150], // 数据保持 斤 (100*2, 93*2, 86*2, 79*2, 75*2)
                         backgroundColor: [
                             chartColors.blue1,
                             chartColors.blue2,
@@ -832,12 +900,16 @@
                     scales: {
                         y: {
                             beginAtZero: false,
-                            min: 70,
+                            min: 140, // 70kg * 2
                             ticks: {
                                 color: '#374151'
                             },
                             grid: {
                                 color: '#E5E7EB'
+                            },
+                            title: {
+                                display: true,
+                                text: '体重 (斤)' // 明确 Y 轴单位
                             }
                         },
                         x: {
@@ -889,4 +961,3 @@
 
 </body>
 </html>
-
