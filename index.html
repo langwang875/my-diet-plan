@@ -145,6 +145,7 @@
                     <div class="bg-white p-2 rounded-lg h-full flex flex-col">
                          <div class="flex justify-between items-center mb-4">
                             <h3 class="font-bold text-gray-700">体重趋势图</h3>
+                            <!-- Retain current weight display in the header -->
                             <span class="text-sm text-gray-500" id="currentWeightDisplay">当前: -- 斤</span>
                          </div>
                         <div class="chart-container flex-grow" style="height: 300px;">
@@ -221,17 +222,18 @@
             <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">核心目标：4个月减重 50斤</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="stat-card">
-                    <!-- Displayed weight in 斤 -->
-                    <div class="stat-number text-[#007399]" id="currentWeightStat">--<span class="text-2xl">斤</span></div>
-                    <div class="stat-label">当前体重</div>
+                    <!-- CHANGED ID and Label: 起始体重 -->
+                    <div class="stat-number text-[#007399]" id="initialWeightStat">--<span class="text-2xl">斤</span></div>
+                    <div class="stat-label">起始体重</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number text-[#00A6AD]">150<span class="text-2xl">斤</span></div>
                     <div class="stat-label">目标体重</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number text-[#008CA6]">50<span class="text-2xl">斤</span></div>
-                    <div class="stat-label">需减总重</div>
+                    <!-- CHANGED ID and Label: 已减体重 -->
+                    <div class="stat-number text-[#008CA6]" id="weightLostStat">--<span class="text-2xl">斤</span></div>
+                    <div class="stat-label">已减体重</div>
                 </div>
             </div>
         </section>
@@ -691,19 +693,46 @@
             const tbody = document.getElementById('weightHistoryBody');
             tbody.innerHTML = '';
             
+            // Define goal weight (in kg)
+            const goalWeightKg = 75.0; // 150 斤
+
             // Show last 5 records, reversed (newest first) for list
             const recentHistory = [...weightHistory].reverse().slice(0, 5);
             
-            // Update current weight display (converted to 斤)
-            const currentWeightStat = document.getElementById('currentWeightStat');
+            // Get elements for the Core Target section (Section 3)
+            const initialWeightStat = document.getElementById('initialWeightStat'); // 起始体重
+            const weightLostStat = document.getElementById('weightLostStat');       // 已减体重
+
             if (weightHistory.length > 0) {
+                // 1. Get Initial Weight (The earliest record)
+                const initialWeightKg = weightHistory[0].weight;
+                const initialWeightJin = (initialWeightKg * 2).toFixed(1);
+
+                // 2. Get Current Weight (The latest record)
                 const currentWeightKg = weightHistory[weightHistory.length-1].weight;
                 const currentWeightJin = (currentWeightKg * 2).toFixed(1);
+                
+                // 3. Calculate Weight Lost: Initial - Current
+                const weightLostKg = initialWeightKg - currentWeightKg;
+                const weightLostJin = (weightLostKg * 2).toFixed(1); 
+
+                // Update the *top* current weight display in the tracker section
                 document.getElementById('currentWeightDisplay').innerText = `当前: ${currentWeightJin} 斤`;
-                currentWeightStat.innerHTML = `${currentWeightJin}<span class="text-2xl">斤</span>`;
+                
+                // Update the Core Target Section (Section 3)
+                // Card 1: 起始体重 (Initial Weight)
+                initialWeightStat.innerHTML = `${initialWeightJin}<span class="text-2xl">斤</span>`;
+                
+                // Card 2: 目标体重 (Goal Weight) - Remains static 150 斤
+
+                // Card 3: 已减体重 (Weight Lost)
+                weightLostStat.innerHTML = `${weightLostJin}<span class="text-2xl">斤</span>`;
+                
             } else {
+                // Fallback if no data
                 document.getElementById('currentWeightDisplay').innerText = `当前: -- 斤`;
-                currentWeightStat.innerHTML = `--<span class="text-2xl">斤</span>`;
+                initialWeightStat.innerHTML = `--<span class="text-2xl">斤</span>`;
+                weightLostStat.innerHTML = `--<span class="text-2xl">斤</span>`; 
             }
 
 
@@ -830,7 +859,7 @@
             const dataStr = recentData.map(r => `${r.date}: ${(r.weight * 2).toFixed(1)}斤 (${r.weight.toFixed(1)}kg)`).join('\n'); 
 
             const systemPrompt = `你是一位专业的体重管理教练。
-            用户画像：39岁男性，二型糖尿病，痛风，初始体重100kg (200斤)，目标75kg (150斤)。
+            用户画像：39岁男性，二型糖尿病，痛风，初始体重101.35kg (202.7斤)，目标75kg (150斤)。
             任务：根据用户的体重记录进行“复盘”。
             分析角度：
             1. 总体趋势（掉秤快/慢/平台期）。
@@ -859,11 +888,11 @@
         
         // 1. Define Target Data (Milestones) with clearer dates
         const targetMilestones = [
-            { date: '2025-10-09', weight: 100.0, label: '起始 (200斤)' }, 
-            { date: '2025-11-09', weight: 95.0, label: '1月里程碑 (190斤)' }, 
-            { date: '2025-12-09', weight: 90.0, label: '2月里程碑 (180斤)' }, 
-            { date: '2026-01-09', weight: 85.0, label: '3月里程碑 (170斤)' }, 
-            { date: '2026-02-09', weight: 75.0, label: '最终目标 (150斤)' } 
+            { date: '2025-10-09', weight: 101.35, label: '起始 (202.7斤)' }, // Use actual start date and weight
+            { date: '2025-12-26', weight: 95.0, label: '1月里程碑 (190斤)' }, 
+            { date: '2026-01-26', weight: 90.0, label: '2月里程碑 (180斤)' }, 
+            { date: '2026-02-26', weight: 85.0, label: '3月里程碑 (170斤)' }, 
+            { date: '2026-03-26', weight: 75.0, label: '最终目标 (150斤)' } 
         ];
 
         function calculateRealisticTrend(history) {
@@ -887,13 +916,17 @@
                 sumXX += p.x * p.x;
             }
             // Slope m (kg/day)
-            let currentRate = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+            // Handle division by zero if all dates are the same
+            let currentRate = 0;
+            if ((n * sumXX - sumX * sumX) !== 0) {
+                 currentRate = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+            }
             
             // 2. Generate Decay Curve Projection
             const projection = [];
             const lastRecord = recentHistory[recentHistory.length - 1];
             const lastDate = new Date(lastRecord.date);
-            const endDate = new Date('2026-02-09');
+            const endDate = new Date('2026-03-26');
             
             // Start point
             projection.push({ x: lastRecord.date, y: lastRecord.weight });
