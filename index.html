@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>减重特训</title><!-- 1. 标题修改 -->
+    <title>减重特训</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
@@ -74,28 +74,28 @@
         }
         
         /* === 关键优化区域：确保 Markdown 输出在移动端不溢出 === */
-        #foodResult {
-            /* 确保父容器是全宽度的，如果AI结果很长，可以自动撑开 */
+        #foodResult, #analysisResult, #rescueResult {
             width: 100%; 
-            overflow-x: hidden; /* 防止溢出后出现横向滚动条 */
+            overflow-x: hidden;
         }
-        #foodResult * {
-            /* 强制长单词和长文本换行 */
+        #foodResult *, #analysisResult *, #rescueResult * {
             word-break: break-word; 
-            /* 允许在单词内换行，特别针对中文环境 */
             overflow-wrap: break-word; 
-            /* 针对标题进行优化，防止大字体溢出 */
             max-width: 100%; 
-            display: block; /* 确保h标签独占一行，方便换行和渲染 */
         }
         /* 针对 H4 标题，限制其字体大小以适应窄屏幕，并确保自动换行 */
-        #foodResult h4, #foodResult h3, #foodResult h2 {
-            font-size: 1.125rem; /* text-lg */
+        h1, h2, h3, h4, h5, h6 {
+            font-size: 1.125rem !important; /* 强制限制标题大小 */
             font-weight: 700;
             line-height: 1.5;
-            white-space: normal; /* 确保标题内容可以自动换行 */
+            white-space: normal;
+            margin-top: 0.5rem;
+            margin-bottom: 0.25rem;
         }
-        
+        ul, ol {
+            padding-left: 1.2rem;
+            list-style-position: outside;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -104,7 +104,7 @@
 
         <header class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold text-[#004080] mb-4">🎯 39岁职场男性减重特训计划</h1>
-            <p class="text-xl text-gray-600">(糖尿病+痛风特别版)</p>
+            <p class="text-xl text-gray-600">(糖尿病+痛风特别版) - 智能版</p>
         </header>
 
         <!-- Weight Tracker Section (New) -->
@@ -113,7 +113,7 @@
                 <h2 class="text-3xl font-bold text-[#005A8D] flex items-center gap-3">
                     ⚖️ 每日体重打卡站
                 </h2>
-                <p class="text-gray-500 mt-1">每天早上空腹记录。</p>
+                <p class="text-gray-500 mt-1">每天早上空腹记录。为了方便，**输入和显示单位都是斤** (内部存储为 kg)。</p>
             </div>
 
             <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -124,7 +124,6 @@
                         <input type="date" id="weightDate" class="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-[#007399]">
                     </div>
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <!-- *** CHANGE: Input label changed to 斤 *** -->
                         <label class="block text-sm font-bold text-gray-700 mb-2">今日体重 (斤)</label>
                         <input type="number" id="weightValue" step="0.1" placeholder="例如: 199.0" class="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-[#007399]">
                     </div>
@@ -238,8 +237,8 @@
         </section>
 
         <section class="bg-white rounded-lg shadow-md p-6 mb-12">
-            <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">4个月减重目标分解</h2>
-            <p class="text-center text-gray-600 mb-6">此图表显示了从200斤的起点到150斤的最终目标，每个月需要达到的阶段性体重。这是一个稳健的减重路径。</p>
+            <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">4个月减重目标分解（燃尽图）</h2>
+            <p class="text-center text-gray-600 mb-6">虚线展示了基于您近3周表现的<b>“生理学”趋势预测</b>。它考虑了减重过程中代谢适应带来的速度衰减（平台期效应），比直线预测更真实。</p>
             <div class="chart-container">
                 <canvas id="weightLossTimeline"></canvas>
             </div>
@@ -308,11 +307,11 @@
                     <h3 class="font-bold text-xl text-[#007399] mb-4">严格执行顺序和技巧</h3>
                     <ol class="list-decimal list-inside space-y-3 text-gray-700">
                         <li><strong class="text-gray-900">进食顺序：</strong> 先喝水 ➔ 吃蔬菜 ➔ 吃肉 ➔ 最后吃主食。</li>
-                        <li><strong class="text-gray-900">主食（必吃）：</strong> 1拳头大小（优选杂粮饭、玉米）。</li>
-                        <li><strong class="text-gray-900">蛋白质：</strong> 优选去皮鸡鸭、淡水鱼、鸡蛋。</li>
-                        <li><strong class="text-gray-900">痛风警惕：</strong> 禁吃内脏、贝类、浓肉汤。</li>
-                        <li><strong class="text-gray-900">“过水”动作：</strong> 准备一杯温水，所有油腻炒菜必须涮油后再吃！</li>
-                        <li><strong class="text-gray-900">饭后运动：</strong> 必须散步1公里，消耗餐后血糖。</li>
+                        <li><strong class="text-gray-900">主食（必吃）：：</strong> 1拳头大小（优选杂粮饭、玉米）。</li>
+                        <li><strong class="text-gray-900">蛋白质：：</strong> 优选去皮鸡鸭、淡水鱼、鸡蛋。</li>
+                        <li><strong class="text-gray-900">痛风警惕：：</strong> 禁吃内脏、贝类、浓肉汤。</li>
+                        <li><strong class="text-gray-900">“过水”动作：：</strong> 准备一杯温水，所有油腻炒菜必须涮油后再吃！</li>
+                        <li><strong class="text-gray-900">饭后运动：：</strong> 必须散步1公里，消耗餐后血糖。</li>
                     </ol>
                 </div>
             </div>
@@ -343,6 +342,14 @@
                 </div>
 
                 <div class="relative mb-8">
+                    <div class="absolute -left-12 top-0 flex items-center justify-center w-10 h-10 bg-[#008CA6] text-white rounded-full font-bold">🌇</div>
+                    <div class="ml-4 p-6 bg-white rounded-lg shadow-md">
+                        <h3 class="font-bold text-xl text-[#007399] mb-2">16:00 防御性加餐</h3>
+                        <p class="text-gray-700">为防止晚餐失控。首选：一根黄瓜/小番茄 或 一小杯无糖酸奶。</p>
+                    </div>
+                </div>
+
+                <div class="relative mb-8">
                     <div class="absolute -left-12 top-0 flex items-center justify-center w-10 h-10 bg-[#008CA6] text-white rounded-full font-bold">🌆</div>
                     <div class="ml-4 p-6 bg-white rounded-lg shadow-md">
                         <h3 class="font-bold text-xl text-[#007399] mb-2">18:30 - 19:00 晚餐</h3>
@@ -353,13 +360,25 @@
                         </ul>
                     </div>
                 </div>
+                
+                <!-- 流程修改：保留散步，移除看书 -->
+                <div class="relative mb-8">
+                    <div class="absolute -left-12 top-0 flex items-center justify-center w-10 h-10 bg-[#008CA6] text-white rounded-full font-bold">🚶</div>
+                    <div class="ml-4 p-6 bg-white rounded-lg shadow-md">
+                        <h3 class="font-bold text-xl text-[#007399] mb-2">19:30 - 20:00 饭后活动</h3>
+                        <ul class="list-disc list-inside text-gray-700">
+                            <li><strong class="text-gray-900">散步：</strong> 饭后休息15分钟后，立即散步 1 公里，帮助消化并消耗血糖。</li>
+                        </ul>
+                    </div>
+                </div>
 
                 <div class="relative mb-8">
                     <div class="absolute -left-12 top-0 flex items-center justify-center w-10 h-10 bg-[#008CA6] text-white rounded-full font-bold">🌙</div>
                     <div class="ml-4 p-6 bg-white rounded-lg shadow-md">
-                        <h3 class="font-bold text-xl text-[#007399] mb-2">20:00 - 23:00 晚间习惯改良</h3>
+                        <h3 class="font-bold text-xl text-[#007399] mb-2">20:30 - 23:00 晚间习惯改良</h3>
                         <ul class="list-disc list-inside text-gray-700">
-                            <li><strong class="text-gray-900">饥饿急救：</strong> 唯一允许的夜宵是【黄瓜】。</li>
+                            <li><strong class="text-gray-900">饥饿急救：：</strong> 唯一允许的夜宵是【黄瓜】或【西红柿】。</li>
+                            <li><strong class="text-red-600">目标入睡：：</strong> 23:00前必须上床睡觉。</li>
                         </ul>
                     </div>
                 </div>
@@ -370,16 +389,17 @@
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">🥤 “无糖可乐”战略</h2>
                 <ul class="list-disc list-inside space-y-3 text-gray-700">
-                    <li><strong class="text-[#007399]">铁律1：</strong> 下午4点前喝完。晚餐后严禁（含咖啡因）。</li>
-                    <li><strong class="text-[#007399]">铁律2：</strong> 不能代替水。喝一听可乐，必须额外多喝一杯白水来排酸。</li>
-                    <li><strong class="text-[#007399]">铁律3：</strong> 作为“防暴食盾牌”。想吃甜点时先喝半瓶，能有效骗过大脑。</li>
+                    <li><strong class="text-[#007399]">铁律1：：</strong> 下午4点前喝完。晚餐后严禁（含咖啡因）。</li>
+                    <li><strong class="text-[#007399]">铁律2：：</strong> 不能代替水。喝一听可乐，必须额外多喝一杯白水来排酸。</li>
+                    <li><strong class="text-[#007399]">铁律3：：</strong> 作为“防暴食盾牌”。想吃甜点时先喝半瓶，能有效骗过大脑。</li>
                 </ul>
             </div>
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-3xl font-bold text-center text-[#005A8D] mb-6">🏃‍♂️ “微运动”策略</h2>
                 <ul class="list-disc list-inside space-y-3 text-gray-700">
-                    <li><strong class="text-[#007399]">午餐和晚餐后（必做）：</strong> 散步1公里。</li>
-                    <li><strong class="text-[#007399]">睡前：</strong> 空中蹬车（50-100个），消耗最后的热量。</li>
+                    <li><strong class="text-[#007399]">午后（必做）：：</strong> 散步1公里。</li>
+                    <li><strong class="text-[#007399]">看书时：：</strong> 靠墙静蹲（1分钟 x 3组），提高胰岛素敏感性。</li>
+                    <li><strong class="text-[#007399]">睡前：：</strong> 空中蹬车（50-100个），消耗最后的热量。</li>
                 </ul>
             </div>
         </section>
@@ -405,8 +425,7 @@
         // 步骤：
         // 1. 访问 https://platform.deepseek.com/ 注册并申请 API Key
         // 2. 将 Key 填入下方引号中
-        // 注意：您的 Key "sk-a5c524e69b2642bf88e49beba1950552" 报告了【余额不足】错误 (402)。
-        // 请在此处替换为您充值后的新 Key，否则 AI 功能将无法使用。
+        // ⚠️ 警告：确保您的 DeepSeek 账户有足够余额，否则 API 会返回 402 错误。
         const apiKey = "sk-a5c524e69b2642bf88e49beba1950552"; // 3. 嵌入用户提供的 Key
         
         // DeepSeek 配置 (无需 VPN，国内直连)
@@ -650,6 +669,8 @@
             // Update UI
             renderWeightHistory();
             updateProgressChart();
+            // Also update the timeline chart trend
+            initTimelineChart(); 
             document.getElementById('weightValue').value = '';
         }
 
@@ -662,6 +683,7 @@
                 localStorage.setItem('myWeightHistory', JSON.stringify(weightHistory));
                 renderWeightHistory();
                 updateProgressChart();
+                initTimelineChart(); // Update trend
             }
         }
 
@@ -832,88 +854,182 @@
             }
         }
 
-        // --- Static Chart Setup ---
-        const tooltipTitleCallback = (tooltipItems) => {
-            const item = tooltipItems[0];
-            let label = item.chart.data.labels[item.dataIndex];
-            if (Array.isArray(label)) {
-                return label.join(' ');
-            } else {
-                return label;
-            }
-        };
+        // --- Timeline Chart Logic (Revised for Realistic/Decaying Trend) ---
+        let timelineChart;
+        
+        // 1. Define Target Data (Milestones) with clearer dates
+        const targetMilestones = [
+            { date: '2025-10-09', weight: 100.0, label: '起始 (200斤)' }, 
+            { date: '2025-11-09', weight: 95.0, label: '1月里程碑 (190斤)' }, 
+            { date: '2025-12-09', weight: 90.0, label: '2月里程碑 (180斤)' }, 
+            { date: '2026-01-09', weight: 85.0, label: '3月里程碑 (170斤)' }, 
+            { date: '2026-02-09', weight: 75.0, label: '最终目标 (150斤)' } 
+        ];
 
-        const chartColors = {
-            blue1: '#004080',
-            blue2: '#005A8D',
-            blue3: '#007399',
-            blue4: '#008CA6',
-            blue5: '#00A6AD'
-        };
-
-        function initStaticCharts() {
-            const ctxTimeline = document.getElementById('weightLossTimeline');
-            if (!ctxTimeline) return;
+        function calculateRealisticTrend(history) {
+            if (history.length < 5) return []; // Need some data
             
-            new Chart(ctxTimeline.getContext('2d'), {
-                type: 'bar',
+            // 1. Calculate current linear velocity (slope) based on last 21 days
+            const recentHistory = history.slice(-21); 
+            const dataPoints = recentHistory.map(r => {
+                // Convert dates to numeric value (days since first point in window)
+                const days = (new Date(r.date) - new Date(recentHistory[0].date)) / (1000 * 60 * 60 * 24);
+                return { x: days, y: r.weight };
+            });
+
+            // Simple Linear Regression
+            let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+            const n = dataPoints.length;
+            for (const p of dataPoints) {
+                sumX += p.x;
+                sumY += p.y;
+                sumXY += p.x * p.y;
+                sumXX += p.x * p.x;
+            }
+            // Slope m (kg/day)
+            let currentRate = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+            
+            // 2. Generate Decay Curve Projection
+            const projection = [];
+            const lastRecord = recentHistory[recentHistory.length - 1];
+            const lastDate = new Date(lastRecord.date);
+            const endDate = new Date('2026-02-09');
+            
+            // Start point
+            projection.push({ x: lastRecord.date, y: lastRecord.weight });
+
+            let currentDate = new Date(lastDate);
+            let currentWeight = lastRecord.weight;
+            
+            // Physiologically, weight loss slows down. 
+            // Assumption: Loss rate decays by ~0.3% per day (approx 10% per month)
+            const decayPerDay = 0.003; 
+
+            // If rate is positive (gaining), we don't decay it (keep warning linear)
+            // If rate is extremely fast (>0.3kg/day), clamp it to avoid unrealistic drops
+            if (currentRate < -0.3) currentRate = -0.3;
+
+            while (currentDate < endDate) {
+                // Step forward 7 days
+                currentDate.setDate(currentDate.getDate() + 7);
+                
+                if (currentRate < 0) {
+                    // Apply decay over 7 days
+                    for(let i=0; i<7; i++) {
+                        currentWeight += currentRate;
+                        currentRate = currentRate * (1 - decayPerDay); 
+                    }
+                } else {
+                    // Linear projection for gaining (warning)
+                    currentWeight += currentRate * 7;
+                }
+
+                // Stop if weight goes below realistic human limits (e.g., 50kg)
+                if (currentWeight < 50) currentWeight = 50;
+
+                if (currentDate > endDate) currentDate = endDate; 
+
+                projection.push({ 
+                    x: currentDate.toISOString().split('T')[0], 
+                    y: parseFloat(currentWeight.toFixed(2)) 
+                });
+                
+                if (currentDate.getTime() === endDate.getTime()) break;
+            }
+
+            return projection;
+        }
+
+        function initTimelineChart() {
+            const ctx = document.getElementById('weightLossTimeline');
+            if (!ctx) return;
+            
+            // If chart exists, destroy it to re-render with new data
+            if (timelineChart) {
+                timelineChart.destroy();
+            }
+
+            const trendData = calculateRealisticTrend(weightHistory);
+
+            timelineChart = new Chart(ctx.getContext('2d'), {
+                type: 'line',
                 data: {
-                    labels: ['起始体重', '第1个月目标', '第2个月目标', '第3个月目标', '最终目标'],
-                    datasets: [{
-                        label: '体重 (斤)', // 标签改为 斤
-                        data: [200, 186, 172, 158, 150], // 数据保持 斤 (100*2, 93*2, 86*2, 79*2, 75*2)
-                        backgroundColor: [
-                            chartColors.blue1,
-                            chartColors.blue2,
-                            chartColors.blue3,
-                            chartColors.blue4,
-                            chartColors.blue5
-                        ],
-                        borderColor: '#ffffff',
-                        borderWidth: 2
-                    }]
+                    datasets: [
+                        {
+                            label: '标准目标路径 (Burndown)',
+                            data: targetMilestones.map(t => ({x: t.date, y: t.weight})),
+                            borderColor: '#10B981', // Green
+                            borderDash: [5, 5], // Dashed
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 5,
+                            pointStyle: 'rectRot', // Distinct point style
+                            tension: 0 // Straight lines between milestones
+                        },
+                        {
+                            label: '实际体重',
+                            data: weightHistory.map(item => ({x: item.date, y: item.weight})),
+                            borderColor: '#007399', // Blue
+                            backgroundColor: 'rgba(0, 115, 153, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 2,
+                            tension: 0.1
+                        },
+                        {
+                            label: '智能趋势预测 (含代谢衰减)',
+                            data: trendData,
+                            borderColor: '#F59E0B', // Orange/Yellow
+                            borderDash: [2, 2], // Dotted
+                            borderWidth: 2,
+                            pointRadius: 0, // No points on the line
+                            fill: false,
+                            tension: 0.4 // Curved line for natural look
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'month',
+                                displayFormats: {
+                                    month: 'yyyy-MM'
+                                }
+                            },
+                            grid: { color: '#E5E7EB' }
                         },
-                        tooltip: {
-                            callbacks: {
-                                title: tooltipTitleCallback
+                        y: {
+                            min: 70, 
+                            suggestedMax: 105, 
+                            title: {
+                                display: true,
+                                text: '体重 (kg)'
                             }
                         }
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            min: 140, // 70kg * 2
-                            ticks: {
-                                color: '#374151'
-                            },
-                            grid: {
-                                color: '#E5E7EB'
-                            },
-                            title: {
-                                display: true,
-                                text: '体重 (斤)' // 明确 Y 轴单位
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: '#374151'
-                            },
-                            grid: {
-                                display: false
+                    plugins: {
+                         tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += (context.parsed.y * 2).toFixed(1) + ' 斤';
+                                    }
+                                    return label;
+                                }
                             }
                         }
                     }
                 }
             });
-            
         }
+
 
         function initApp() {
             // Set default date input
@@ -923,8 +1039,8 @@
             renderWeightHistory();
             initProgressChart();
             
-            // Initialize static charts (timeline chart)
-            initStaticCharts();
+            // Initialize updated timeline chart with trend
+            initTimelineChart();
         }
 
         // Wait for the entire page (including all elements) to load before initializing charts
